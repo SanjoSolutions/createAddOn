@@ -8,6 +8,7 @@ const directoryPath = dirname(fileURLToPath(import.meta.url))
 
 export async function createAddOn(addOnPath) {
   const addOnName = basename(addOnPath)
+  const title = generateTitle(addOnName)
 
   await mkdir(addOnPath, {
     recursive: true,
@@ -15,7 +16,7 @@ export async function createAddOn(addOnPath) {
 
   {
     const content =
-      `## Title: ${ addOnName }
+      `## Title: ${ title }
 ## Interface: 100002
 
 ${ addOnName }.lua
@@ -25,7 +26,7 @@ ${ addOnName }.lua
 
   {
     const content =
-      `## Title: ${ addOnName }
+      `## Title: ${ title }
 ## Interface: 30400
 
 ${ addOnName }.lua
@@ -35,7 +36,7 @@ ${ addOnName }.lua
 
   {
     const content =
-      `## Title: ${ addOnName }
+      `## Title: ${ title }
 ## Interface: 11403
 
 ${ addOnName }.lua
@@ -56,4 +57,13 @@ local _ = {}
     const content = await readFile(join(directoryPath, 'data', 'LICENSE'))
     await writeFile(join(addOnPath, 'LICENSE'), content)
   }
+}
+
+function generateTitle(addOnName) {
+  const words = addOnName.match(/\b.+\b/g)
+  return words.map(capitalize).join(' ')
+}
+
+function capitalize(word) {
+  return word[0].toUpperCase() + word.slice(1)
 }
